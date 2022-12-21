@@ -1,45 +1,38 @@
 #include "stack.h"
 
-// Вспомогательная функция для добавления элемента `x` в stack
-void push(struct stack** top, data_t data) {  // вставляем в начало
-  struct stack* node = NULL;  // выделяем новый узел в куче
+void push(struct stack** top, data_t data) {
+  struct stack* node = NULL;
   node = (struct stack*)malloc(sizeof(struct stack));
-  if (!node) {  // проверяем, заполнен ли Stack (heap). Тогда вставка элемента
-                // может привести к переполнению stack
+  if (!node) {
     printf("Heap Overflow\n");
     exit(-1);
   }
-  printf("Inserting {%lf, %c}\n", data.value, data.type);
+  printf("Inserting {%lf, %d}\n", data.value, data.type);
   node->data = data;
-  node->next = *top;  // устанавливаем указатель .next нового узла так, чтобы он
-                      // указывал на текущий верхний узел списка
-  *top = node;  // обновить верхний указатель
-  // node->nodesCount += 1;  // увеличить размер stack на 1
+  node->next = *top;
+  *top = node;
+  // node->nodesCount += 1;
 }
 
-// Вспомогательная функция для извлечения верхнего элемента из stack
-data_t pop(struct stack** top) {  // удалить в начале
+data_t pop(struct stack** top) {
   struct stack* node;
-  if (*top == NULL) {  // проверка на опустошение stack
+  if (*top == NULL) {
     printf("Stack Underflow\n");
     exit(EXIT_FAILURE);
   }
-  data_t x = peek(*top);  // принять к сведению данные верхнего узла
-  printf("Removing {%lf, %c}\n", x.value, x.type);
+  data_t x = peek(*top);
+  printf("Removing {%lf, %d}\n", x.value, x.type);
   node = *top;
-  *top = (*top)->next;  // обновляем верхний указатель, чтобы он указывал на
-                        // следующий узел
-  // node->nodesCount -= 1;  // уменьшить размер stack на 1
-  free(node);  // освободить выделенную память
+  *top = (*top)->next;
+  // node->nodesCount -= 1;
+  free(node);
   return x;
 }
 
-// Вспомогательная функция для проверки, пуст stack или нет
 int isEmpty(struct stack* top) { return top == NULL; }
 
-// Вспомогательная функция для возврата верхнего элемента stack
 data_t peek(struct stack* top) {
-  if (!isEmpty(top)) {  // проверка на пустой stack
+  if (!isEmpty(top)) {
     return top->data;
   } else {
     printf("The stack is empty\n");
@@ -47,5 +40,4 @@ data_t peek(struct stack* top) {
   }
 }
 
-// // Вспомогательная функция для возврата числа узлов stack
 // int size(struct stack* node) { return node->nodesCount; }

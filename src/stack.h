@@ -4,9 +4,30 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+typedef enum {
+  NUM = 1,
+  SUM,
+  SUB,
+  MULT,
+  DIV,
+  MOD,
+  COS,
+  SIN,
+  TAN,
+  ACOS,
+  ASIN,
+  ATAN,
+  LN,
+  LOG,
+  SQRT,
+  POW,
+  OPEN,
+  CLOSED
+} lexeme_enum;
+
 typedef struct data_t {
   double value;
-  char type;
+  lexeme_enum type;
 } data_t;
 
 struct stack {
