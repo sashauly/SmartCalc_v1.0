@@ -12,10 +12,11 @@
 
 #define is_number(ch) ((ch) >= '0' && (ch) <= '9')
 #define is_operation(ch) \
-  ((ch) == '+' || (ch) == '*' || (ch) == '/' || (ch) == '^')
+  ((ch) == '+' || (ch) == '-' || (ch) == '*' || (ch) == '/' || (ch) == '^')
 
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data);
-int s21_string_to_double(char* str, char** end, double* number);
+int num_pars(char* str, char* arr, int* i, data_t* data);
 int type_operation(char ch);
+void remove_spaces(char* data);
 
 #endif  // SRC_PARSER_H
