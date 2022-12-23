@@ -11,6 +11,8 @@
 #define PI acos(-1)
 
 #define is_number(ch) ((ch) >= '0' && (ch) <= '9')
+#define is_letter(ch) \
+  ((ch) >= 'a' && (ch) <= 'z') || ((ch) >= 'A' && (ch) <= 'Z')
 #define is_operation(ch) \
   ((ch) == '+' || (ch) == '-' || (ch) == '*' || (ch) == '/' || (ch) == '^')
 

@@ -1,4 +1,75 @@
 #include "parser.h"
+
+void remove_spaces(char* src) {
+  char* i = src;
+  char* j = src;
+  while (*j != 0) {
+    *i = *j++;
+    if (*i != ' ') i++;
+  }
+  *i = 0;
+}
+
+void number_parser(char* dst, char* src, data_t* data, int* i) {
+  int exit_fun = 0;
+  int count_dot = 0;
+  for (int j = 0; exit_fun != 1; j++) {
+    if (src[*i] == ',') src[*i] = '.';
+    if (src[*i] == '.') count_dot++;
+    dst[j] = src[*i];
+    i++;
+    if (is_number(src[*i]) || src[*i] == '.') {
+      continue;
+    } else {
+      exit_fun = 1;
+    }
+  }
+  i--;
+  if (count_dot > 1) {
+    exit(EXIT_FAILURE);
+  } else {
+    data->value = atof(dst);
+    data->type = NUM;
+  }
+}
+
+void func_parser(char* dst, char* src, data_t* data, int* i) {
+  int exit_fun = 0;
+
+  for (int l = 0; exit_fun != 1; l++) {
+    dst[l] = src[*i];
+    *i = *i + 1;
+    if (src[*i] >= 'a' && src[*i] <= 'z') {
+      continue;
+    } else {
+      exit_fun = 1;
+    }
+  }
+  *i = *i - 1;
+  data->value = 0;
+
+  if (!strcmp(dst, "cos"))
+    data->type = COS;
+  else if (!strcmp(dst, "sin"))
+    data->type = SIN;
+  else if (!strcmp(dst, "tan"))
+    data->type = TAN;
+  else if (!strcmp(dst, "acos"))
+    data->type = ACOS;
+  else if (!strcmp(dst, "asin"))
+    data->type = ASIN;
+  else if (!strcmp(dst, "atan"))
+    data->type = ATAN;
+  else if (!strcmp(dst, "sqrt"))
+    data->type = SQRT;
+  else if (!strcmp(dst, "ln"))
+    data->type = LN;
+  else if (!strcmp(dst, "log"))
+    data->type = LOG;
+  else if (!strcmp(dst, "mod"))
+    data->type = MOD;
+}
+
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
   double a = 0, b = 0, c = 0;
   a = (peek(*stack_n).value);
@@ -107,6 +178,30 @@ void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
       push(stack_n, *data);
       break;
 
+    case LN:
+      pop(stack_o);
+      c = log(a);
+      data->value = c;
+      data->type = NUM;
+      push(stack_n, *data);
+      break;
+
+    case LOG:
+      pop(stack_o);
+      c = log10(a);
+      data->value = c;
+      data->type = NUM;
+      push(stack_n, *data);
+      break;
+
+    case SQRT:
+      pop(stack_o);
+      c = pow(a, 0.5);
+      data->value = c;
+      data->type = NUM;
+      push(stack_n, *data);
+      break;
+
     case POW:
       b = (peek(*stack_n).value);
       pop(stack_n);
@@ -143,27 +238,14 @@ int type_operation(char ch) {
     type = MULT;
   } else if ((ch) == '/') {
     type = DIV;
-  } else if ((ch) == 'm') {
-    type = MOD;
   } else if ((ch) == '^') {
     type = POW;
   }
   return type;
 }
 
-void remove_spaces(char* data) {  // удаляем пробелы.. как эта хрень работает?
-  char* i = data;
-  char* j = data;
-  while (*j != 0) {
-    *i = *j++;
-    if (*i != ' ') i++;
-  }
-  *i = 0;
-}
-
 int main() {
-  char str[256] = "sin(-1^2)";
-  double number = 0;
+  char str[256] = "9mod4";
   struct stack* stack_n = NULL;
   struct stack* stack_o = NULL;
   data_t data = {0, '\0'};
@@ -172,33 +254,6 @@ int main() {
   remove_spaces(str);
   for (int i = 0; i < (int)strlen(str); i++) {
     memset(tmp, '\0', 256);
-
-    if (str[i] == 's' || str[i] == 'c' || str[i] == 't') {
-      char func[3] = {0};
-      for (int j = 0; j < 3; j++) {
-        func[j] = str[i];
-        i++;
-      }
-      i--;
-      if (func[0] == 's' && func[1] == 'i' && func[2] == 'n') {
-        data.value = 0;
-        data.type = SIN;
-        push(&stack_o, data);
-        continue;
-      }
-      if (func[0] == 'c' && func[1] == 'o' && func[2] == 's') {
-        data.value = 0;
-        data.type = COS;
-        push(&stack_o, data);
-        continue;
-      }
-      if (func[0] == 't' && func[1] == 'a' && func[2] == 'n') {
-        data.value = 0;
-        data.type = TAN;
-        push(&stack_o, data);
-        continue;
-      }
-    }
 
     if ((str[i] == '-' && i == 0) ||
         (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
@@ -209,10 +264,8 @@ int main() {
       data.type = SUB;
       push(&stack_o, data);
       continue;
-    }
-
-    if ((str[i] == '+' && i == 0) ||
-        (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
+    } else if ((str[i] == '+' && i == 0) ||
+               (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
       data.value = 0;
       data.type = NUM;
       push(&stack_n, data);
@@ -220,47 +273,22 @@ int main() {
       data.type = SUM;
       push(&stack_o, data);
       continue;
-    }
-
-    if (is_number(str[i])) {
-      int error = 0;
-      int exit_fun = 0;
-      int count_dot = 0;
-      for (int j = 0; exit_fun != 1; j++) {
-        if (str[i] == ',') str[i] = '.';  // если ',' меняем на '.'
-        if (str[i] == '.') count_dot++;
-        tmp[j] = str[i];
-        i++;
-
-        // если i+1 тоже цифра или точка - продолжаем цикл
-        if (is_number(str[i]) || str[i] == '.') {
-          continue;
-        } else {
-          exit_fun = 1;
-        }
-      }
-      i--;
-      if (count_dot > 1) {
-        error = 1;
-      } else {
-        data.value = atof(tmp);  // преобразуем массив цифр в число
-        data.type = NUM;
-      }
+    } else if (is_number(str[i])) {
+      number_parser(tmp, str, &data, &i);
       push(&stack_n, data);
       continue;
-    }
-
-    if (str[i] == 'p') {
+    } else if (str[i] == 'p') {
       data.value = PI;
       data.type = NUM;
       push(&stack_n, data);
       continue;
-    }
-
-    if (is_operation(str[i]) ||
-        (str[i] == 'm' && str[i + 1] == 'o' && str[i + 2] == 'd')) {
+    } else if (is_letter(str[i])) {
+      func_parser(tmp, str, &data, &i);
+      push(&stack_o, data);
+      continue;
+    } else if (is_operation(str[i])) {
       int type = type_operation(str[i]);
-      if (isEmpty(stack_o)) {
+      if (is_empty(stack_o)) {
         data.value = 0;
         data.type = type;
         push(&stack_o, data);
@@ -271,21 +299,18 @@ int main() {
           data.type = type;
           push(&stack_o, data);
           continue;
-        }
-        if (get_priority(type) <= get_priority(peek(stack_o).type)) {
+        } else {
           maths(&stack_n, &stack_o, &data);
           i--;
           continue;
         }
       }
-    }
-    if (str[i] == '(') {
+    } else if (str[i] == '(') {
       data.value = 0;
       data.type = OPEN;
       push(&stack_o, data);
       continue;
-    }
-    if (str[i] == ')') {
+    } else if (str[i] == ')') {
       while (peek(stack_o).type != OPEN) {
         maths(&stack_n, &stack_o, &data);
       }
@@ -294,7 +319,7 @@ int main() {
     }
   }
 
-  while (!isEmpty(stack_o)) {
+  while (!is_empty(stack_o)) {
     maths(&stack_n, &stack_o, &data);
   }
   printf("RESULT %lf\n", peek(stack_n).value);

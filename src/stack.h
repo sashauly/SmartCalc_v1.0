@@ -37,8 +37,7 @@ struct stack {
 
 void push(struct stack** top, data_t data);
 data_t pop(struct stack** top);
-int isEmpty(struct stack* top);
 data_t peek(struct stack* top);
-int size(struct stack* node);
+int is_empty(struct stack* top);
 
 #endif  // SRC_STACK_H

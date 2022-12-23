@@ -5,18 +5,17 @@ void push(struct stack** top, data_t data) {
   node = (struct stack*)malloc(sizeof(struct stack));
   if (!node) {
     printf("Heap Overflow\n");
-    exit(-1);
+    exit(EXIT_FAILURE);
   }
   printf("Inserting {%lf, %d}\n", data.value, data.type);
   node->data = data;
   node->next = *top;
   *top = node;
-  // node->nodesCount += 1;
 }
 
 data_t pop(struct stack** top) {
   struct stack* node;
-  if (*top == NULL) {
+  if (is_empty(*top)) {
     printf("Stack Underflow\n");
     exit(EXIT_FAILURE);
   }
@@ -24,15 +23,12 @@ data_t pop(struct stack** top) {
   printf("Removing {%lf, %d}\n", x.value, x.type);
   node = *top;
   *top = (*top)->next;
-  // node->nodesCount -= 1;
   free(node);
   return x;
 }
 
-int isEmpty(struct stack* top) { return top == NULL; }
-
 data_t peek(struct stack* top) {
-  if (!isEmpty(top)) {
+  if (!is_empty(top)) {
     return top->data;
   } else {
     printf("The stack is empty\n");
@@ -40,4 +36,4 @@ data_t peek(struct stack* top) {
   }
 }
 
-// int size(struct stack* node) { return node->nodesCount; }
+int is_empty(struct stack* top) { return top == NULL; }
