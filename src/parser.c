@@ -17,14 +17,14 @@ void number_parser(char* dst, char* src, data_t* data, int* i) {
     if (src[*i] == ',') src[*i] = '.';
     if (src[*i] == '.') count_dot++;
     dst[j] = src[*i];
-    i++;
+    *i = *i + 1;
     if (is_number(src[*i]) || src[*i] == '.') {
       continue;
     } else {
       exit_fun = 1;
     }
   }
-  i--;
+  *i = *i - 1;
   if (count_dot > 1) {
     exit(EXIT_FAILURE);
   } else {
