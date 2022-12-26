@@ -17,11 +17,11 @@
   ((ch) == '+' || (ch) == '-' || (ch) == '*' || (ch) == '/' || (ch) == '^')
 
 double s21_smart_calc(char* src, double x);
-
+void remove_spaces(char* src, char* dst);
+int validator(char* str);
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data);
 double number_parser(char* dst, char* src, int* i);
 int func_parser(char* dst, char* src, int* i);
 int type_operation(char ch);
-void remove_spaces(char* src, char* dst);
 
 #endif  // SRC_PARSER_H

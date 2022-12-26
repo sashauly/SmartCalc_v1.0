@@ -11,6 +11,23 @@ void remove_spaces(char* src, char* dst) {
   dst[j] = '\0';
 }
 
+int validator(char* str) {
+  int error = 0;
+  int i = 0;
+  int open_sk = 0;
+  int close_sk = 0;
+  for (; str[i] != '\0' && str[i] != '\n' && error == 0; i++) {
+    if (str[i] == '(') open_sk++;
+    if (str[i] == ')') close_sk++;
+    if ((str[i] == '(' && str[i + 1] == ')') ||
+        (str[i] == ')' && str[i + 1] == '(') || (str[0] == ')')) {
+      error = 1;
+    }
+  }
+  if ((open_sk != close_sk) || (str[i - 1]) == '(') error = 1;
+  return error;
+}
+
 double number_parser(char* dst, char* src, int* i) {
   double number = 0;
   int exit_fun = 0;
@@ -197,66 +214,69 @@ double s21_smart_calc(char* src, double x) {
   double number = 0;
   x = 0;
   remove_spaces(src, str);
-  for (int i = 0; i < (int)strlen(str); i++) {
-    char tmp[256] = {0};
+  if (!validator(str)) {
+    for (int i = 0; i < (int)strlen(str); i++) {
+      char tmp[256] = {0};
 
-    if ((str[i] == '-' && i == 0) ||
-        (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
-      push(&stack_n, &data, 0, NUM);
-      push(&stack_o, &data, 0, SUB);
-
-      continue;
-    } else if ((str[i] == '+' && i == 0) ||
-               (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
-      push(&stack_n, &data, 0, NUM);
-      push(&stack_o, &data, 0, SUM);
-      continue;
-    } else if (is_number(str[i])) {
-      number = number_parser(tmp, str, &i);
-      push(&stack_n, &data, number, NUM);
-      continue;
-    } else if (str[i] == 'p') {
-      push(&stack_n, &data, PI, NUM);
-      continue;
-    } else if (is_letter(str[i])) {
-      int func_type = func_parser(tmp, str, &i);
-      push(&stack_o, &data, 0, func_type);
-      continue;
-    } else if (is_operation(str[i])) {
-      int type = type_operation(str[i]);
-      if (is_empty(stack_o)) {
-        push(&stack_o, &data, 0, type);
+      if ((str[i] == '-' && i == 0) ||
+          (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
+        push(&stack_n, &data, 0, NUM);
+        push(&stack_o, &data, 0, SUB);
         continue;
-      } else {
-        if (get_priority(type) > get_priority(peek(stack_o).type)) {
+      } else if ((str[i] == '+' && i == 0) ||
+                 (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
+        push(&stack_n, &data, 0, NUM);
+        push(&stack_o, &data, 0, SUM);
+        continue;
+      } else if (is_number(str[i])) {
+        number = number_parser(tmp, str, &i);
+        push(&stack_n, &data, number, NUM);
+        continue;
+      } else if (str[i] == 'p') {
+        push(&stack_n, &data, PI, NUM);
+        continue;
+      } else if (is_letter(str[i])) {
+        int func_type = func_parser(tmp, str, &i);
+        push(&stack_o, &data, 0, func_type);
+        continue;
+      } else if (is_operation(str[i])) {
+        int type = type_operation(str[i]);
+        if (is_empty(stack_o)) {
           push(&stack_o, &data, 0, type);
           continue;
         } else {
-          maths(&stack_n, &stack_o, &data);
-          i--;
-          continue;
+          if (get_priority(type) > get_priority(peek(stack_o).type)) {
+            push(&stack_o, &data, 0, type);
+            continue;
+          } else {
+            maths(&stack_n, &stack_o, &data);
+            i--;
+            continue;
+          }
         }
+      } else if (str[i] == '(') {
+        push(&stack_o, &data, 0, OPEN);
+        continue;
+      } else if (str[i] == ')') {
+        while (peek(stack_o).type != OPEN) {
+          maths(&stack_n, &stack_o, &data);
+        }
+        pop(&stack_o);
+        continue;
       }
-    } else if (str[i] == '(') {
-      push(&stack_o, &data, 0, OPEN);
-      continue;
-    } else if (str[i] == ')') {
-      while (peek(stack_o).type != OPEN) {
-        maths(&stack_n, &stack_o, &data);
-      }
-      pop(&stack_o);
-      continue;
     }
-  }
 
-  while (!is_empty(stack_o)) {
-    maths(&stack_n, &stack_o, &data);
+    while (!is_empty(stack_o)) {
+      maths(&stack_n, &stack_o, &data);
+    }
+    number = peek(stack_n).value;
+    while (!is_empty(stack_n)) {
+      pop(&stack_n);
+    }
+    return number;
+  } else {
+    exit(EXIT_FAILURE);
   }
-  number = peek(stack_n).value;
-  while (!is_empty(stack_n)) {
-    pop(&stack_n);
-  }
-  return number;
 }
 
 // int main() {
