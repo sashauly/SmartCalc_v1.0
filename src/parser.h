@@ -16,9 +16,12 @@
 #define is_operation(ch) \
   ((ch) == '+' || (ch) == '-' || (ch) == '*' || (ch) == '/' || (ch) == '^')
 
+double s21_smart_calc(char* src, double x);
+
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data);
-int num_pars(char* str, char* arr, int* i, data_t* data);
+double number_parser(char* dst, char* src, int* i);
+int func_parser(char* dst, char* src, int* i);
 int type_operation(char ch);
-void remove_spaces(char* data);
+void remove_spaces(char* src, char* dst);
 
 #endif  // SRC_PARSER_H

@@ -35,7 +35,7 @@ struct stack {
   struct stack* next;
 };
 
-void push(struct stack** top, data_t data);
+void push(struct stack** top, data_t* data, double value, int type);
 data_t pop(struct stack** top);
 data_t peek(struct stack* top);
 int is_empty(struct stack* top);

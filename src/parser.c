@@ -1,73 +1,74 @@
 #include "parser.h"
 
-void remove_spaces(char* src) {
-  char* i = src;
-  char* j = src;
-  while (*j != 0) {
-    *i = *j++;
-    if (*i != ' ') i++;
+void remove_spaces(char* src, char* dst) {
+  int j = 0;
+  for (int i = 0; src[i] != '\0'; i++) {
+    if (src[i] != ' ') {
+      dst[j] = src[i];
+      j++;
+    }
   }
-  *i = 0;
+  dst[j] = '\0';
 }
 
-void number_parser(char* dst, char* src, data_t* data, int* i) {
+double number_parser(char* dst, char* src, int* i) {
+  double number = 0;
   int exit_fun = 0;
   int count_dot = 0;
   for (int j = 0; exit_fun != 1; j++) {
-    if (src[*i] == ',') src[*i] = '.';
-    if (src[*i] == '.') count_dot++;
-    dst[j] = src[*i];
-    i++;
     if (is_number(src[*i]) || src[*i] == '.') {
-      continue;
-    } else {
-      exit_fun = 1;
-    }
-  }
-  i--;
-  if (count_dot > 1) {
-    exit(EXIT_FAILURE);
-  } else {
-    data->value = atof(dst);
-    data->type = NUM;
-  }
-}
-
-void func_parser(char* dst, char* src, data_t* data, int* i) {
-  int exit_fun = 0;
-
-  for (int l = 0; exit_fun != 1; l++) {
-    dst[l] = src[*i];
-    *i = *i + 1;
-    if (src[*i] >= 'a' && src[*i] <= 'z') {
-      continue;
+      if (src[*i] == ',') src[*i] = '.';
+      if (src[*i] == '.') count_dot++;
+      dst[j] = src[*i];
+      *i = *i + 1;
     } else {
       exit_fun = 1;
     }
   }
   *i = *i - 1;
-  data->value = 0;
+  if (count_dot > 1) {
+    exit(EXIT_FAILURE);
+  } else {
+    number = atof(dst);
+  }
+  return number;
+}
+
+int func_parser(char* dst, char* src, int* i) {
+  int type = 0;
+  int exit_fun = 0;
+
+  for (int l = 0; exit_fun != 1; l++) {
+    if (src[*i] >= 'a' && src[*i] <= 'z') {
+      dst[l] = src[*i];
+      *i = *i + 1;
+    } else {
+      exit_fun = 1;
+    }
+  }
+  *i = *i - 1;
 
   if (!strcmp(dst, "cos"))
-    data->type = COS;
+    type = COS;
   else if (!strcmp(dst, "sin"))
-    data->type = SIN;
+    type = SIN;
   else if (!strcmp(dst, "tan"))
-    data->type = TAN;
+    type = TAN;
   else if (!strcmp(dst, "acos"))
-    data->type = ACOS;
+    type = ACOS;
   else if (!strcmp(dst, "asin"))
-    data->type = ASIN;
+    type = ASIN;
   else if (!strcmp(dst, "atan"))
-    data->type = ATAN;
+    type = ATAN;
   else if (!strcmp(dst, "sqrt"))
-    data->type = SQRT;
+    type = SQRT;
   else if (!strcmp(dst, "ln"))
-    data->type = LN;
+    type = LN;
   else if (!strcmp(dst, "log"))
-    data->type = LOG;
+    type = LOG;
   else if (!strcmp(dst, "mod"))
-    data->type = MOD;
+    type = MOD;
+  return type;
 }
 
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
@@ -78,42 +79,26 @@ void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
     case SUM:
       b = (peek(*stack_n).value);
       pop(stack_n);
-      pop(stack_o);
       c = a + b;
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case SUB:
       b = (peek(*stack_n).value);
       pop(stack_n);
-      pop(stack_o);
       c = b - a;
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case MULT:
       b = (peek(*stack_n).value);
       pop(stack_n);
-      pop(stack_o);
       c = a * b;
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case DIV:
       if (a != 0) {
         b = (peek(*stack_n).value);
         pop(stack_n);
-        pop(stack_o);
         c = b / a;
-        data->value = c;
-        data->type = NUM;
-        push(stack_n, *data);
       } else {
         fprintf(stderr, "Сan't divide by zero\n");
         exit(EXIT_FAILURE);
@@ -123,107 +108,67 @@ void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
     case MOD:
       b = (peek(*stack_n).value);
       pop(stack_n);
-      pop(stack_o);
-      c = fmod(a, b);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
+      c = fmod(b, a);
       break;
 
     case COS:
-      pop(stack_o);
       c = cos(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case SIN:
-      pop(stack_o);
       c = sin(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case TAN:
-      pop(stack_o);
       c = tan(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case ACOS:
-      pop(stack_o);
       c = acos(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case ASIN:
-      pop(stack_o);
       c = asin(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case ATAN:
-      pop(stack_o);
       c = atan(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case LN:
-      pop(stack_o);
       c = log(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case LOG:
-      pop(stack_o);
       c = log10(a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     case SQRT:
-      pop(stack_o);
-      c = pow(a, 0.5);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
+      c = sqrt(a);
       break;
 
     case POW:
       b = (peek(*stack_n).value);
       pop(stack_n);
-      pop(stack_o);
       c = pow(b, a);
-      data->value = c;
-      data->type = NUM;
-      push(stack_n, *data);
       break;
 
     default:
       break;
   }
+  pop(stack_o);
+  push(stack_n, data, c, NUM);
 }
 
 int get_priority(int type) {
   int priority = 0;
-  if (type == SUM || type == SUB) priority = 1;
-  if (type == MULT || type == DIV || type == MOD) priority = 2;
-  if (type == POW) priority = 3;
-  if (type == COS || type == SIN || type == TAN || type == ACOS ||
-      type == ASIN || type == ATAN || type == LN || type == LOG || type == SQRT)
+  if (type == SUM || type == SUB)
+    priority = 1;
+  else if (type >= MULT && type <= MOD)
+    priority = 2;
+  else if (type == POW || type == SQRT)
+    priority = 3;
+  else if (type >= COS && type <= LOG)
     priority = 4;
   return priority;
 }
@@ -244,60 +189,47 @@ int type_operation(char ch) {
   return type;
 }
 
-int main() {
-  char str[256] = "9mod4";
+double s21_smart_calc(char* src, double x) {
+  char str[256] = {0};
   struct stack* stack_n = NULL;
   struct stack* stack_o = NULL;
-  data_t data = {0, '\0'};
-  char tmp[256] = {0};
-
-  remove_spaces(str);
+  data_t data = {0, 0};
+  double number = 0;
+  x = 0;
+  remove_spaces(src, str);
   for (int i = 0; i < (int)strlen(str); i++) {
-    memset(tmp, '\0', 256);
+    char tmp[256] = {0};
 
     if ((str[i] == '-' && i == 0) ||
         (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
-      data.value = 0;
-      data.type = NUM;
-      push(&stack_n, data);
-      data.value = 0;
-      data.type = SUB;
-      push(&stack_o, data);
+      push(&stack_n, &data, 0, NUM);
+      push(&stack_o, &data, 0, SUB);
+
       continue;
     } else if ((str[i] == '+' && i == 0) ||
                (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
-      data.value = 0;
-      data.type = NUM;
-      push(&stack_n, data);
-      data.value = 0;
-      data.type = SUM;
-      push(&stack_o, data);
+      push(&stack_n, &data, 0, NUM);
+      push(&stack_o, &data, 0, SUM);
       continue;
     } else if (is_number(str[i])) {
-      number_parser(tmp, str, &data, &i);
-      push(&stack_n, data);
+      number = number_parser(tmp, str, &i);
+      push(&stack_n, &data, number, NUM);
       continue;
     } else if (str[i] == 'p') {
-      data.value = PI;
-      data.type = NUM;
-      push(&stack_n, data);
+      push(&stack_n, &data, PI, NUM);
       continue;
     } else if (is_letter(str[i])) {
-      func_parser(tmp, str, &data, &i);
-      push(&stack_o, data);
+      int func_type = func_parser(tmp, str, &i);
+      push(&stack_o, &data, 0, func_type);
       continue;
     } else if (is_operation(str[i])) {
       int type = type_operation(str[i]);
       if (is_empty(stack_o)) {
-        data.value = 0;
-        data.type = type;
-        push(&stack_o, data);
+        push(&stack_o, &data, 0, type);
         continue;
       } else {
         if (get_priority(type) > get_priority(peek(stack_o).type)) {
-          data.value = 0;
-          data.type = type;
-          push(&stack_o, data);
+          push(&stack_o, &data, 0, type);
           continue;
         } else {
           maths(&stack_n, &stack_o, &data);
@@ -306,9 +238,7 @@ int main() {
         }
       }
     } else if (str[i] == '(') {
-      data.value = 0;
-      data.type = OPEN;
-      push(&stack_o, data);
+      push(&stack_o, &data, 0, OPEN);
       continue;
     } else if (str[i] == ')') {
       while (peek(stack_o).type != OPEN) {
@@ -322,6 +252,14 @@ int main() {
   while (!is_empty(stack_o)) {
     maths(&stack_n, &stack_o, &data);
   }
-  printf("RESULT %lf\n", peek(stack_n).value);
-  return 0;
+  number = peek(stack_n).value;
+  while (!is_empty(stack_n)) {
+    pop(&stack_n);
+  }
+  return number;
 }
+
+// int main() {
+//   double value = s21_smart_calc("9mod8", 0);
+//   printf("%lf\n", value);
+// }

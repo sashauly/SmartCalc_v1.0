@@ -1,14 +1,16 @@
 CC=gcc
-STDFLAGS=-Wall -Werror -Wextra -std=c11 #-fsanitize=address
+STDFLAGS=#-Wall -Werror -Wextra -std=c11 #-fsanitize=address
 TST_CFLAGS:= -g $(STDFLAGS)
 GCOV_FLAGS?=-fprofile-arcs -ftest-coverage
 LINUX_FLAGS=-lsubunit -lrt -lpthread -lm
 LIBS=-lcheck
 VALGRIND_FLAGS=--trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all --verbose 
 
-TARGET=s21_decimal.a
 
-SRC=$(wildcard s21_*.c)
+
+# all, install, uninstall, clean, dvi, dist, tests, gcov_report.
+
+SRC=$(wildcard *.c)
 OBJ=$(patsubst %.c,%.o, ${SRC})
 # HEADER=$(wildcard s21_*.h)
 
@@ -26,22 +28,15 @@ ifeq ($(OS),Darwin)
 	OPEN_CMD = open
 endif
 
-all: $(TARGET)
+all:
 
-$(TARGET): ${SRC}
-	$(CC) -c $(STDFLAGS) $(SRC)
-	ar rc $@ $(OBJ)
-	ranlib $@
-	cp $@ lib$@
-	make clean_obj
-
-test: $(TARGET)
+tests:
 ifeq ($(OS), Darwin)
-	${CC} $(STDFLAGS) ${TEST_SRC} $< -o unit_test $(LIBS)
+	${CC} $(STDFLAGS) ${TEST_SRC} ${SRC} -o unit_test $(LIBS) -g
 else
-	${CC} $(STDFLAGS) ${TEST_SRC} $< -o unit_test $(LIBS) $(LINUX_FLAGS)
+	${CC} $(STDFLAGS) ${TEST_SRC} ${SRC} -o unit_test $(LIBS) $(LINUX_FLAGS)
 endif
-	./unit_test 0
+	./unit_test
 
 gcov_report: clean_test
 ifeq ($(OS), Darwin)
@@ -54,12 +49,12 @@ endif
 	genhtml -o report s21_test.info
 	$(OPEN_CMD) ./report/index.html
 
-leaks: $(TARGET)
-	$(CC) $(TST_CFLAGS) ${TEST_SRC} $< -o test $(LIBS)
+leaks:
+	$(CC) $(TST_CFLAGS) ${TEST_SRC} ${SRC} -o test $(LIBS)
 	leaks -atExit -- ./test
 
-valgrind: $(TARGET)
-	$(CC) $(TST_CFLAGS) ${TEST_SRC} $< -o test $(LIBS) $(LINUX_FLAGS)
+valgrind:
+	$(CC) $(TST_CFLAGS) ${TEST_SRC} ${SRC} -o test $(LIBS) $(LINUX_FLAGS)
 	CK_FORK=no valgrind $(VALGRIND_FLAGS) --log-file=RESULT_VALGRIND.txt ./test
 
 clang:

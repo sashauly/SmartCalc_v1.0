@@ -1,14 +1,29 @@
 #include "stack.h"
 
-void push(struct stack** top, data_t data) {
+// void push(struct stack** top, data_t data) {
+//   struct stack* node = NULL;
+//   node = (struct stack*)malloc(sizeof(struct stack));
+//   if (!node) {
+//     printf("Heap Overflow\n");
+//     exit(EXIT_FAILURE);
+//   }
+//   printf("Inserting {%lf, %d}\n", data.value, data.type);
+//   node->data = data;
+//   node->next = *top;
+//   *top = node;
+// }
+
+void push(struct stack** top, data_t* data, double value, int type) {
   struct stack* node = NULL;
   node = (struct stack*)malloc(sizeof(struct stack));
   if (!node) {
     printf("Heap Overflow\n");
     exit(EXIT_FAILURE);
   }
-  printf("Inserting {%lf, %d}\n", data.value, data.type);
-  node->data = data;
+  // printf("Inserting {%lf, %d}\n", data->value, data->type);
+  data->value = value;
+  data->type = type;
+  node->data = *data;
   node->next = *top;
   *top = node;
 }
@@ -20,7 +35,7 @@ data_t pop(struct stack** top) {
     exit(EXIT_FAILURE);
   }
   data_t x = peek(*top);
-  printf("Removing {%lf, %d}\n", x.value, x.type);
+  // printf("Removing {%lf, %d}\n", x.value, x.type);
   node = *top;
   *top = (*top)->next;
   free(node);
@@ -31,7 +46,7 @@ data_t peek(struct stack* top) {
   if (!is_empty(top)) {
     return top->data;
   } else {
-    printf("The stack is empty\n");
+    // printf("The stack is empty\n");
     exit(EXIT_FAILURE);
   }
 }
