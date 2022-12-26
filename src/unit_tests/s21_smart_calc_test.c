@@ -307,7 +307,6 @@ START_TEST(mod_t) {
   ck_assert_ldouble_eq(my, 4);
 }
 END_TEST
-
 Suite *suite_smart_calc(void) {
   Suite *s = suite_create("suite_smart_calc");
   TCase *tc = tcase_create("suite_smart_calc");
@@ -340,7 +339,6 @@ Suite *suite_smart_calc(void) {
   tcase_add_test(tc, log_t);
   tcase_add_test(tc, sqrt_t);
   tcase_add_test(tc, mod_t);
-
   suite_add_tcase(s, tc);
   return s;
 }
