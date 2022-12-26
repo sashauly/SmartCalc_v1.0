@@ -270,9 +270,7 @@ double s21_smart_calc(char* src, double x) {
       maths(&stack_n, &stack_o, &data);
     }
     number = peek(stack_n).value;
-    while (!is_empty(stack_n)) {
-      pop(&stack_n);
-    }
+    pop(&stack_n);
     return number;
   } else {
     exit(EXIT_FAILURE);
