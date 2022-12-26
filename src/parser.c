@@ -263,6 +263,8 @@ double s21_smart_calc(char* src, double x) {
         }
         pop(&stack_o);
         continue;
+      } else {
+        fprintf(stderr, "ERROR");
       }
     }
 
