@@ -117,7 +117,7 @@ void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
         pop(stack_n);
         c = b / a;
       } else {
-        fprintf(stderr, "Сan't divide by zero\n");
+        fprintf(stderr, "Can't divide by zero\n");
         exit(EXIT_FAILURE);
       }
       break;
