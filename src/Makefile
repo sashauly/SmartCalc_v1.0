@@ -1,5 +1,5 @@
 CC=gcc
-STDFLAGS=#-Wall -Werror -Wextra -std=c11 #-fsanitize=address
+STDFLAGS=-Wall -Werror -Wextra -std=c11 #-fsanitize=address
 TST_CFLAGS:= -g $(STDFLAGS)
 GCOV_FLAGS?=-fprofile-arcs -ftest-coverage
 LINUX_FLAGS=-lsubunit -lrt -lpthread -lm

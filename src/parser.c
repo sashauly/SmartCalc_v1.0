@@ -32,7 +32,6 @@ int validator(char* str) {
 
 double number_parser(char* dst, char* src, int* i) {
   double number = 0;
-  int exit_fun = 0;
   int count_dot = 0;
   int j = 0;
 
@@ -54,7 +53,6 @@ double number_parser(char* dst, char* src, int* i) {
 
 int func_parser(char* dst, char* src, int* i) {
   int type = 0;
-  int exit_fun = 0;
   int j = 0;
 
   while (is_letter(src[*i])) {
@@ -114,4 +112,61 @@ int type_operation(char ch) {
     type = POW;
   }
   return type;
+}
+
+void parser(char* str, struct stack** stack_n, struct stack** stack_o,
+            data_t* data, double* number, double x) {
+  for (int i = 0; i < (int)strlen(str); i++) {
+    char tmp[256] = {0};
+
+    if ((str[i] == '-' && i == 0) ||
+        (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
+      push(stack_n, data, 0, NUM);
+      push(stack_o, data, 0, SUB);
+      continue;
+    } else if ((str[i] == '+' && i == 0) ||
+               (i > 0 && str[i] == '+' && str[i - 1] == '(')) {
+      push(stack_n, data, 0, NUM);
+      push(stack_o, data, 0, SUM);
+      continue;
+    } else if (is_number(str[i])) {
+      *number = number_parser(tmp, str, &i);
+      push(stack_n, data, *number, NUM);
+      continue;
+    } else if (str[i] == 'p') {
+      push(stack_n, data, PI, NUM);
+      continue;
+    } else if (str[i] == 'x') {
+      push(stack_n, data, x, NUM);
+      continue;
+    } else if (is_letter(str[i])) {
+      int func_type = func_parser(tmp, str, &i);
+      push(stack_o, data, 0, func_type);
+      continue;
+    } else if (is_operation(str[i])) {
+      int type = type_operation(str[i]);
+      if (is_empty(*stack_o)) {
+        push(stack_o, data, 0, type);
+        continue;
+      } else {
+        if (get_priority(type) > get_priority(peek(*stack_o).type)) {
+          push(stack_o, data, 0, type);
+          continue;
+        } else {
+          maths(stack_n, stack_o, data);
+          i--;
+          continue;
+        }
+      }
+    } else if (str[i] == '(') {
+      push(stack_o, data, 0, OPEN);
+      continue;
+    } else if (str[i] == ')') {
+      while (peek(*stack_o).type != OPEN) {
+        maths(stack_n, stack_o, data);
+      }
+      pop(stack_o);
+      continue;
+    }
+  }
 }
