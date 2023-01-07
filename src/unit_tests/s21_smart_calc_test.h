@@ -3,6 +3,7 @@
 #include <check.h>
 #include <unistd.h>
 
+#include "../calc.h"
 #include "../parser.h"
 #include "../stack.h"
 Suite *suite_smart_calc(void);

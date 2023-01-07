@@ -31,7 +31,7 @@ void push(struct stack** top, data_t* data, double value, int type) {
 data_t pop(struct stack** top) {
   struct stack* node;
   if (is_empty(*top)) {
-    printf("Stack Underflow\n");
+    // printf("Stack Underflow\n");
     exit(EXIT_FAILURE);
   }
   data_t x = peek(*top);
