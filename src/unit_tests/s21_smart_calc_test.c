@@ -15,7 +15,7 @@ START_TEST(s21_test_1) {
   double orig = 162;
   // int error = 0;
 
-  char str[255] = "   4 * 5 * 2 * 2 * 2 + 2";
+  char str[255] = "   4 * 5 * 2 ^ 2 * 2 + 2";
   x = s21_smart_calc(str, x);
   ck_assert_double_eq(x, orig);
 }
@@ -33,11 +33,11 @@ START_TEST(s21_test_2) {
 END_TEST
 
 START_TEST(s21_test_3) {
-  double x = 0;
+  double x = 5;
   double orig = 9;
   // int error = 0;
 
-  char str[255] = "  5 + 5 - 2 * 3 / 6";
+  char str[255] = "  5 + x - 2 * 3 / 6";
   x = s21_smart_calc(str, x);
   ck_assert_double_eq(x, orig);
 }
@@ -146,10 +146,10 @@ END_TEST
 
 START_TEST(s21_test_5) {
   double x = 0;
-  double orig = 11.958851;
+  double orig = 5 + (3 + sin(2 - 3.5)) * 2;
   // int error = 0;
 
-  char str[255] = "5 + (3 + sin(8/2 - 3.5)) *2";
+  char str[255] = "5 + (3 + sin(2 - 3.5)) *2";
 
   x = s21_smart_calc(str, x);
   ck_assert_double_eq_tol(x, orig, 1e-7);
@@ -177,8 +177,8 @@ START_TEST(s21_test_7) {
 END_TEST
 
 START_TEST(s21_test_8) {
-  double orig = -0.41211848524;
-  char *str = "-sin(9)";
+  double orig = 5.388742979;
+  char *str = "-sin(9) + ln(256)";
   double x = 0.0;
   double value = s21_smart_calc(str, x);
 
@@ -186,8 +186,8 @@ START_TEST(s21_test_8) {
 }
 END_TEST
 START_TEST(s21_test_9) {
-  double orig = 2.41211848524;
-  char *str = "sin(9)-(-2)";
+  double orig = sin(PI / 2) - (-2);
+  char *str = "sin(p/2)-(-2)";
   double x = 0.0;
   double value = s21_smart_calc(str, x);
 

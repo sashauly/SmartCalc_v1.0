@@ -97,6 +97,6 @@ double s21_smart_calc(char* src, double x) {
 }
 
 // int main() {
-//   double value = s21_smart_calc("", 7);
+//   double value = s21_smart_calc("cos(-1.5)", 0);
 //   printf("%lf\n", value);
 // }
