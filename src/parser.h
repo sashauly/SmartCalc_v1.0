@@ -1,6 +1,7 @@
 #ifndef SRC_PARSER_H
 #define SRC_PARSER_H
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -21,6 +22,10 @@ double number_parser(char* dst, char* src, int* i);
 int func_parser(char* dst, char* src, int* i);
 int get_priority(int type);
 int type_operation(char ch);
+void calculations(struct stack** stack_n, struct stack** stack_o, data_t* data);
+double s21_smart_calc(char* src, double x);
+double binary_operations(struct stack** stack_n, int oper);
+double func_operations(struct stack** stack_n, int oper);
 void parser(char* str, struct stack** stack_n, struct stack** stack_o,
             data_t* data, double* number, double x);
 
