@@ -1,5 +1,6 @@
 #include "calc.h"
 
+//  Вычисление бинарных операций
 double binary_operations(struct stack** stack_n, int operator) {
   double a = 0, b = 0, c = 0;
   a = (peek(*stack_n).value);
@@ -30,7 +31,7 @@ double binary_operations(struct stack** stack_n, int operator) {
   }
   return c;
 }
-
+//  Вычисление функций
 double func_operations(struct stack** stack_n, int operator) {
   double a = 0, b = 0, c = 0;
   a = (peek(*stack_n).value);
@@ -60,7 +61,7 @@ double func_operations(struct stack** stack_n, int operator) {
   }
   return c;
 }
-
+//  Вычисление в зависимости от оператора в стеке
 void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
   double c = 0;
   int operator= peek(*stack_o).type;
@@ -72,7 +73,7 @@ void maths(struct stack** stack_n, struct stack** stack_o, data_t* data) {
   pop(stack_o);
   push(stack_n, data, c, NUM);
 }
-
+//  Основная функция SMART_CALC
 double s21_smart_calc(char* src, double x) {
   char str[256] = {0};
   struct stack* stack_n = NULL;

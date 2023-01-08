@@ -1,23 +1,10 @@
 #include "stack.h"
 
-// void push(struct stack** top, data_t data) {
-//   struct stack* node = NULL;
-//   node = (struct stack*)malloc(sizeof(struct stack));
-//   if (!node) {
-//     printf("Heap Overflow\n");
-//     exit(EXIT_FAILURE);
-//   }
-//   printf("Inserting {%lf, %d}\n", data.value, data.type);
-//   node->data = data;
-//   node->next = *top;
-//   *top = node;
-// }
-
 void push(struct stack** top, data_t* data, double value, int type) {
   struct stack* node = NULL;
   node = (struct stack*)malloc(sizeof(struct stack));
   if (!node) {
-    printf("Heap Overflow\n");
+    // printf("Heap Overflow\n");
     exit(EXIT_FAILURE);
   }
   // printf("Inserting {%lf, %d}\n", data->value, data->type);

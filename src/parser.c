@@ -2,6 +2,7 @@
 
 #include "calc.h"
 
+//  Удаляет пробелы из входной строки
 void remove_spaces(char* src, char* dst) {
   int j = 0;
   for (int i = 0; src[i] != '\0'; i++) {
@@ -12,7 +13,7 @@ void remove_spaces(char* src, char* dst) {
   }
   dst[j] = '\0';
 }
-
+//  Проверка ошибок во входной строке
 int validator(char* str) {
   int error = 0;
   int i = 0;
@@ -29,7 +30,7 @@ int validator(char* str) {
   if ((open_sk != close_sk) || (str[i - 1]) == '(') error = 1;
   return error;
 }
-
+//  Перевод числовых значений из строки в число
 double number_parser(char* dst, char* src, int* i) {
   double number = 0;
   int count_dot = 0;
@@ -50,7 +51,7 @@ double number_parser(char* dst, char* src, int* i) {
   }
   return number;
 }
-
+//  Возвращает тип функции, полученный путем парсинга строки
 int func_parser(char* dst, char* src, int* i) {
   int type = 0;
   int j = 0;
@@ -84,7 +85,7 @@ int func_parser(char* dst, char* src, int* i) {
     type = MOD;
   return type;
 }
-
+//  Возвращает приоритет операции или функции
 int get_priority(int type) {
   int priority = 0;
   if (type == SUM || type == SUB)
@@ -97,7 +98,7 @@ int get_priority(int type) {
     priority = 4;
   return priority;
 }
-
+//  Возвращает тип операции
 int type_operation(char ch) {
   int type = 0;
   if ((ch) == '+') {
@@ -113,12 +114,11 @@ int type_operation(char ch) {
   }
   return type;
 }
-
+//  Основной парсер строки
 void parser(char* str, struct stack** stack_n, struct stack** stack_o,
             data_t* data, double* number, double x) {
   for (int i = 0; i < (int)strlen(str); i++) {
     char tmp[256] = {0};
-
     if ((str[i] == '-' && i == 0) ||
         (i > 0 && str[i] == '-' && str[i - 1] == '(')) {
       push(stack_n, data, 0, NUM);
