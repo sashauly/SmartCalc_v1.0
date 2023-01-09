@@ -30,6 +30,14 @@ endif
 
 all:
 
+install:
+	make clean
+	mkdir build
+	cd ui && qmake && make && make clean && rm Makefile && cd ../ && mv ui/SmartCalc build
+
+uninstall:
+	rm -rf build*
+
 tests:
 ifeq ($(OS), Darwin)
 	${CC} $(STDFLAGS) ${TEST_SRC} ${SRC} -o unit_test $(LIBS) -g

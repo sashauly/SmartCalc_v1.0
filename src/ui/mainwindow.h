@@ -6,8 +6,8 @@
 
 #include <QMainWindow>
 extern "C" {
-    #include "parser.h"
-    #include "stack.h"
+    #include "../parser.h"
+    #include "../stack.h"
 }
 
 QT_BEGIN_NAMESPACE
