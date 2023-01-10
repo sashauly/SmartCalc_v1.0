@@ -1179,7 +1179,7 @@ QPushButton:pressed {
     </property>
     <property name="font">
      <font>
-      <pointsize>26</pointsize>
+      <pointsize>22</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -1293,6 +1293,9 @@ QPushButton:pressed {
       <pointsize>20</pointsize>
      </font>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::ClickFocus</enum>
+    </property>
     <property name="styleSheet">
      <string notr="true">QSpinBox {
 	padding-right: 5px;
@@ -1306,6 +1309,9 @@ background-color : rgb(229,229,241);
     </property>
     <property name="buttonSymbols">
      <enum>QAbstractSpinBox::NoButtons</enum>
+    </property>
+    <property name="keyboardTracking">
+     <bool>true</bool>
     </property>
     <property name="minimum">
      <number>-1000000</number>
@@ -1333,6 +1339,9 @@ background-color : rgb(229,229,241);
      <font>
       <pointsize>20</pointsize>
      </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::ClickFocus</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">QSpinBox {
@@ -1375,6 +1384,9 @@ background-color : rgb(229,229,241);
       <pointsize>20</pointsize>
      </font>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::ClickFocus</enum>
+    </property>
     <property name="styleSheet">
      <string notr="true">QSpinBox {
 	padding-right: 5px;
@@ -1415,6 +1427,9 @@ background-color : rgb(229,229,241);
      <font>
       <pointsize>20</pointsize>
      </font>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::ClickFocus</enum>
     </property>
     <property name="styleSheet">
      <string notr="true">QSpinBox {

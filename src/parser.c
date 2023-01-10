@@ -211,6 +211,7 @@ void parser(char* str, struct stack** stack_n, struct stack** stack_o,
       continue;
     } else if (str[i] == 'p') {
       push(stack_n, data, PI, NUM);
+      i++;
       continue;
     } else if (str[i] == 'x') {
       push(stack_n, data, x, NUM);
