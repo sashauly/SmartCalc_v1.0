@@ -256,7 +256,7 @@ double s21_smart_calc(char* src, double x) {
   data_t data = {0, 0};
   double number = 0;
   remove_spaces(src, str);
-  if (!validator(str)) {
+  if (!(validator(str))) {
     parser(str, &stack_n, &stack_o, &data, &number, x);
     while (!is_empty(stack_o)) {
       calculations(&stack_n, &stack_o, &data);
