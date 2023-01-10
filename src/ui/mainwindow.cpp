@@ -59,8 +59,13 @@ MainWindow::~MainWindow() { delete ui; }
 void MainWindow::digits_numbers() {
 
   QPushButton *button = (QPushButton *)sender();
-  QString result_label = (ui->result_show->text() + button->text());
-  ui->result_show->setText(result_label);
+  if (ui->x_value->hasFocus()){
+      QString result_label1 = (ui->x_value->text() + button->text());
+      ui->x_value->setText(result_label1);
+  } else {
+      QString result_label2 = (ui->result_show->text() + button->text());
+      ui->result_show->setText(result_label2);
+  }
 }
 
 void MainWindow::operations() {
@@ -194,71 +199,77 @@ void MainWindow::graph()
     {
         button->setChecked(true);
         ui->x_value->setPlaceholderText("Graph enabled");
+        ui->result_show->setPlaceholderText("Enter a function containing x:");
         ui->x_value->setEnabled(0);
+        ui->pushButton_equal->setEnabled(0);
 
         this->setFixedWidth(890);
         ui->result_show->setFixedWidth(870);
-
-            ui->x_max->setEnabled(true);
-            ui->x_min->setEnabled(true);
-            ui->y_max->setEnabled(true);
-            ui->y_min->setEnabled(true);
+        ui->x_max->setEnabled(true);
+        ui->x_min->setEnabled(true);
+        ui->y_max->setEnabled(true);
+        ui->y_min->setEnabled(true);
     } else {
         this->setFixedWidth(290);
         ui->result_show->setFixedWidth(270);
 
         button->setChecked(false);
         ui->x_value->setEnabled(1);
+        ui->pushButton_equal->setEnabled(1);
+
         ui->x_value->setPlaceholderText("Enter x value:");
+        ui->result_show->setPlaceholderText("");
         ui->x_max->setEnabled(false);
         ui->x_min->setEnabled(false);
         ui->y_max->setEnabled(false);
         ui->y_min->setEnabled(false);
+        ui->widget->replot();
+        x.clear();
+        y.clear();
+        ui->result_show->setText("");
+//        ui->widget->graph(0)->data()->clear();
     }
 }
 
 void MainWindow::make_graph() {
     QString str = ui->result_show->text();
-      if (str.contains("x") == false) {
+    if (str.contains("x") == false) {
         ui->result_show->setText("Expression doesn't contain x");
-      } else {
-        x.clear();
-        y.clear();
-        QString str = ui->result_show->text();
-        int Xmin = ui->x_min->value();
-        int Xmax = ui->x_max->value();
-        int Ymin = ui->y_min->value();
-        int Ymax = ui->y_max->value();
-        double step = 0.001 * (qFabs(Xmin) + qFabs(Xmax));
+    } else {
+        double x_min_num = ui->x_min->value();
+        double x_max_num = ui->x_max->value();
+        double y_min_num = ui->y_min->value();
+        double y_max_num = ui->y_max->value();
+
+        double step = 0.001 * (qFabs(x_min_num) + qFabs(x_max_num));
         double Y = 0;
-        double X = (double)Xmin;
-        while (X < (double)Xmax) {
-          x.push_back(X);
-          str = ui->result_show->text();
-          str.replace("x", QString::number(X));
-          QByteArray ba = str.toLocal8Bit();
-          char *char_array = ba.data();
-          Y = s21_smart_calc(char_array, X);
-          if (X == Xmin) {
-                  Ymin = Y;
-                  Ymax = Y;
-                }
-                if (Y < Ymin) Ymin = Y;
-                if (Y > Ymax) Ymax = Y;
-          y.push_back(Y);
-          X += step;
+        double X = (double)x_min_num;
+        while (X < (double)x_max_num) {
+            x.push_back(X);
+            QByteArray ba = str.toLatin1();
+            char *char_array = ba.data();
+            Y = s21_smart_calc(char_array, X);
+            y.push_back(Y);
+            X += step;
         }
         ui->widget->addGraph();
-//        ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
-//        ui->widget->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
         ui->widget->graph(0)->setLineStyle(QCPGraph::lsLine);
-        ui->widget->xAxis->setRange(Xmin, Xmax);
-        ui->widget->yAxis->setRange(Ymin, Ymax);
-        ui->widget->graph(0)->setData(x, y);
-//        ui->widget->rescaleAxes();
+        ui->widget->graph(0)->addData(x, y);
+        ui->widget->xAxis->setRange(x_min_num, x_max_num);
+        ui->widget->yAxis->setRange(y_min_num, y_max_num);
         ui->widget->replot();
-//        ui->widget->update();
+        x.clear();
+        y.clear();
         ui->widget->graph(0)->data()->clear();
-      }
+    }
+}
+
+void MainWindow::on_pushButton_clear_graph_clicked()
+{
+    ui->widget->replot();
+    x.clear();
+    y.clear();
+//    ui->result_show->setText("");
+//    ui->widget->graph(0)->data()->clear();
 }
 

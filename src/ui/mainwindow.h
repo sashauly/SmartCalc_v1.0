@@ -39,5 +39,6 @@ class MainWindow : public QMainWindow {
   void on_pushButton_equal_clicked();
   void graph();
   void make_graph();
+  void on_pushButton_clear_graph_clicked();
 };
 #endif  // MAINWINDOW_H
