@@ -5,6 +5,7 @@
 #include <stdlib.h>
 
 #include <QMainWindow>
+#include <QVector>
 extern "C" {
     #include "../parser.h"
     #include "../stack.h"
@@ -25,6 +26,7 @@ class MainWindow : public QMainWindow {
 
  private:
   Ui::MainWindow *ui;
+  QVector<double> x, y;
 
  private slots:
   void digits_numbers();
@@ -35,5 +37,7 @@ class MainWindow : public QMainWindow {
   void on_pushButton_dot_clicked();
   void on_pushButton_pi_clicked();
   void on_pushButton_equal_clicked();
+  void graph();
+  void make_graph();
 };
 #endif  // MAINWINDOW_H

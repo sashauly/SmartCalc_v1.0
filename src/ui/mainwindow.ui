@@ -2,16 +2,37 @@
 <ui version="4.0">
  <class>MainWindow</class>
  <widget class="QMainWindow" name="MainWindow">
+  <property name="windowModality">
+   <enum>Qt::ApplicationModal</enum>
+  </property>
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>290</width>
+    <width>890</width>
     <height>540</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>290</width>
+    <height>540</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>890</width>
+    <height>540</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>SmartCalc v1.0</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QMainWindow{
@@ -1138,8 +1159,8 @@ QPushButton:pressed {
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
-    <property name="dragEnabled">
-     <bool>false</bool>
+    <property name="placeholderText">
+     <string extracomment=" Enter x value from keyboard"> Enter x value:</string>
     </property>
     <property name="clearButtonEnabled">
      <bool>true</bool>
@@ -1159,27 +1180,201 @@ QPushButton:pressed {
       <pointsize>30</pointsize>
      </font>
     </property>
-    <property name="toolTipDuration">
-     <number>-1</number>
-    </property>
     <property name="styleSheet">
      <string notr="true">QLineEdit {
-border-style: outset;
+	padding-right: 5px;
+padding-left: 5px; 
+	border-style: outset;
 	border-width: 2px;
 	border-radius: 25px;
 	border: none;
 background-color : rgb(229,229,241);
 }</string>
     </property>
-    <property name="cursorPosition">
-     <number>0</number>
-    </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButton_graph">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>200</y>
+      <width>60</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>22</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border-style: outset;
+	border-width: 2px;
+	border-radius: 15px;
+	border: none;
+	background-color: rgb(245, 242, 249);
+}
+QPushButton:pressed {
+	border-style: outset;
+	border-width: 2px;
+	border-radius: 15px;
+	border: none;
+    background-color: rgb(227,225,228);
+}</string>
+    </property>
+    <property name="text">
+     <string>∟</string>
+    </property>
+    <property name="checkable">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QCustomPlot" name="widget" native="true">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>100</y>
+      <width>581</width>
+      <height>311</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_draw_graph">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>480</y>
+      <width>81</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>22</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border-style: outset;
+	border-width: 2px;
+	border-radius: 25px;
+	background-color: rgb(223, 225, 248);
+	border: none;
+}
+
+QPushButton:pressed {
+    border-style: outset;
+	border-width: 2px;
+	border-radius: 15px;
+	background-color: rgb(198, 202, 229);
+	border: none;
+}</string>
+    </property>
+    <property name="text">
+     <string>Graph</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="x_min">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>430</y>
+      <width>131</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-1000000</number>
+    </property>
+    <property name="maximum">
+     <number>1000000</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>-10</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="x_max">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>430</y>
+      <width>131</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-1000000</number>
+    </property>
+    <property name="maximum">
+     <number>1000000</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="y_max">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>490</y>
+      <width>131</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-1000000</number>
+    </property>
+    <property name="maximum">
+     <number>1000000</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>10</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="y_min">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>490</y>
+      <width>131</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="minimum">
+     <number>-1000000</number>
+    </property>
+    <property name="maximum">
+     <number>1000000</number>
+    </property>
+    <property name="singleStep">
+     <number>10</number>
+    </property>
+    <property name="value">
+     <number>-10</number>
+    </property>
+   </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header>qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

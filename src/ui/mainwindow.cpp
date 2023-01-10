@@ -6,6 +6,11 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow) {
   ui->setupUi(this);
 
+  this->setFixedWidth(290);
+  this->setFixedHeight(540);
+
+  ui->result_show->setFixedWidth(270);
+
   connect(ui->pushButton_0, SIGNAL(clicked()), this, SLOT(digits_numbers()));
   connect(ui->pushButton_1, SIGNAL(clicked()), this, SLOT(digits_numbers()));
   connect(ui->pushButton_2, SIGNAL(clicked()), this, SLOT(digits_numbers()));
@@ -40,11 +45,18 @@ MainWindow::MainWindow(QWidget *parent)
   connect(ui->pushButton_ln, SIGNAL(clicked()), this, SLOT(func()));
   connect(ui->pushButton_log, SIGNAL(clicked()), this, SLOT(func()));
   connect(ui->pushButton_mod, SIGNAL(clicked()), this, SLOT(func()));
+
+  connect(ui->pushButton_graph, SIGNAL(clicked()), this, SLOT(graph()));
+  ui->pushButton_graph->setCheckable(true);
+
+  connect(ui->pushButton_draw_graph, SIGNAL(clicked()), this, SLOT(make_graph()));
+  ui->widget->xAxis->setLabel("x");
+  ui->widget->yAxis->setLabel("y");
 }
 
 MainWindow::~MainWindow() { delete ui; }
 
-void MainWindow::digits_numbers() {  // добавление чисел и точки в лейбл
+void MainWindow::digits_numbers() {
 
   QPushButton *button = (QPushButton *)sender();
   QString result_label = (ui->result_show->text() + button->text());
@@ -135,7 +147,8 @@ void MainWindow::on_pushButton_dot_clicked() {
   }
 }
 
-void MainWindow::on_pushButton_pi_clicked() {
+void MainWindow::on_pushButton_pi_clicked()
+{
   int count = 0;
   QString str = ui->result_show->text();
   int len = str.isNull() ? 0 : str.length();
@@ -157,7 +170,8 @@ void MainWindow::on_pushButton_pi_clicked() {
   }
 }
 
-void MainWindow::on_pushButton_equal_clicked() {
+void MainWindow::on_pushButton_equal_clicked()
+{
   QString str_expr = ui->result_show->text();
   QByteArray ba = str_expr.toLocal8Bit();
   char *c_str2 = ba.data();
@@ -172,3 +186,79 @@ void MainWindow::on_pushButton_equal_clicked() {
   sprintf(outStr, "%.15g", error);
   ui->result_show->setText(outStr);
 }
+
+void MainWindow::graph()
+{
+    QPushButton *button = (QPushButton *)sender();
+    if (button->isChecked())
+    {
+        button->setChecked(true);
+        ui->x_value->setPlaceholderText("Graph enabled");
+        ui->x_value->setEnabled(0);
+
+        this->setFixedWidth(890);
+        ui->result_show->setFixedWidth(870);
+
+            ui->x_max->setEnabled(true);
+            ui->x_min->setEnabled(true);
+            ui->y_max->setEnabled(true);
+            ui->y_min->setEnabled(true);
+    } else {
+        this->setFixedWidth(290);
+        ui->result_show->setFixedWidth(270);
+
+        button->setChecked(false);
+        ui->x_value->setEnabled(1);
+        ui->x_value->setPlaceholderText("Enter x value:");
+        ui->x_max->setEnabled(false);
+        ui->x_min->setEnabled(false);
+        ui->y_max->setEnabled(false);
+        ui->y_min->setEnabled(false);
+    }
+}
+
+void MainWindow::make_graph() {
+    QString str = ui->result_show->text();
+      if (str.contains("x") == false) {
+        ui->result_show->setText("Expression doesn't contain x");
+      } else {
+        x.clear();
+        y.clear();
+        QString str = ui->result_show->text();
+        int Xmin = ui->x_min->value();
+        int Xmax = ui->x_max->value();
+        int Ymin = ui->y_min->value();
+        int Ymax = ui->y_max->value();
+        double step = 0.001 * (qFabs(Xmin) + qFabs(Xmax));
+        double Y = 0;
+        double X = (double)Xmin;
+        while (X < (double)Xmax) {
+          x.push_back(X);
+          str = ui->result_show->text();
+          str.replace("x", QString::number(X));
+          QByteArray ba = str.toLocal8Bit();
+          char *char_array = ba.data();
+          Y = s21_smart_calc(char_array, X);
+          if (X == Xmin) {
+                  Ymin = Y;
+                  Ymax = Y;
+                }
+                if (Y < Ymin) Ymin = Y;
+                if (Y > Ymax) Ymax = Y;
+          y.push_back(Y);
+          X += step;
+        }
+        ui->widget->addGraph();
+//        ui->widget->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom | QCP::iSelectPlottables);
+//        ui->widget->graph(0)->setScatterStyle(QCPScatterStyle::ssCircle);
+        ui->widget->graph(0)->setLineStyle(QCPGraph::lsLine);
+        ui->widget->xAxis->setRange(Xmin, Xmax);
+        ui->widget->yAxis->setRange(Ymin, Ymax);
+        ui->widget->graph(0)->setData(x, y);
+//        ui->widget->rescaleAxes();
+        ui->widget->replot();
+//        ui->widget->update();
+        ui->widget->graph(0)->data()->clear();
+      }
+}
+
