@@ -18,15 +18,14 @@
 
 void remove_spaces(char* src, char* dst);
 int validator(char* str);
-double number_parser(char* dst, char* src, int* i);
-int func_parser(char* dst, char* src, int* i);
+int number_parser(char* dst, char* src, int* i, double* number);
+int func_parser(char* dst, char* src, int* i, int* type);
 int get_priority(int type);
 int type_operation(char ch);
-void calculations(struct stack** stack_n, struct stack** stack_o, data_t* data);
-double s21_smart_calc(char* src, double x);
-double binary_operations(struct stack** stack_n, int oper);
-double func_operations(struct stack** stack_n, int oper);
-void parser(char* str, struct stack** stack_n, struct stack** stack_o,
-            data_t* data, double* number, double x);
-
+int binary_operations(struct stack** stack_n, int oper, double* c);
+int func_operations(struct stack** stack_n, int oper, double* c);
+int calculations(struct stack** stack_n, struct stack** stack_o, data_t* data);
+int parser(char* str, struct stack** stack_n, struct stack** stack_o,
+           data_t* data, double x);
+int s21_smart_calc(char* src, double x, double* result);
 #endif  // SRC_PARSER_H

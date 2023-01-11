@@ -87,19 +87,27 @@ void MainWindow::operations() {
 
   QString str = ui->result_show->text();
   int len = str.isNull() ? 0 : str.length();
-  if (button == ui->pushButton_open) {
-    ui->result_show->setText(result_label + "(");
-  }
   if (len != 0) {
-    if (is_number(str[len - 1]) || str[len - 1] == 'x' || result_label[len - 1] == 'i' || str[len - 1] != '.') {
+    if ((is_number(str[len - 1]) || is_operation(str[len - 1]) ||
+         str[len - 1] == 'x' || result_label[len - 1] == 'i') &&
+        str[len - 1] != '.') {
       if (button == ui->pushButton_open) {
-        ui->result_show->setText(result_label + "*(");
+        if (!is_operation(str[len - 1])) {
+          ui->result_show->setText(result_label + "*(");
+        } else {
+          ui->result_show->setText(result_label + "(");
+        }
       }
     }
-    if (str[len - 1] != '.' && str[len - 1] != '(' && !is_operation(str[len - 1])) {
+    if (str[len - 1] != '.' && str[len - 1] != '(' &&
+        !is_operation(str[len - 1])) {
       if (button == ui->pushButton_close) {
         ui->result_show->setText(result_label + ")");
       }
+    }
+  } else {
+    if (button == ui->pushButton_open) {
+      ui->result_show->setText(result_label + "(");
     }
   }
 }
@@ -125,11 +133,11 @@ void MainWindow::arithmetic() {
       }
     }
   } else {
-      if (button == ui->pushButton_plus) {
-        ui->result_show->setText(str + "+");
-      } else if (button == ui->pushButton_minus) {
-        ui->result_show->setText(str + "-");
-      }
+    if (button == ui->pushButton_plus) {
+      ui->result_show->setText(str + "+");
+    } else if (button == ui->pushButton_minus) {
+      ui->result_show->setText(str + "-");
+    }
   }
 }
 
@@ -140,7 +148,8 @@ void MainWindow::func() {
   int len = result_label.isNull() ? 0 : result_label.length();
   if (len != 0) {
     if (result_label[len - 1] != 'x') {
-      if (is_number(result_label[len - 1]) || result_label[len - 1] == ')' || result_label[len - 1] == 'i') {
+      if (is_number(result_label[len - 1]) || result_label[len - 1] == ')' ||
+          result_label[len - 1] == 'i') {
         if (button == ui->pushButton_sin) {
           ui->result_show->setText(result_label + "*sin(");
         } else if (button == ui->pushButton_cos) {
@@ -261,8 +270,7 @@ void MainWindow::on_pushButton_pi_clicked() {
   int j = len - 1;
   if (len == 0) {
     ui->result_show->setText(ui->result_show->text() + "pi");
-  } else if (count == 0 && (!is_number(str[j]) &&
-                            str[j] != '.')) {
+  } else if (count == 0 && (!is_number(str[j]) && str[j] != '.')) {
     ui->result_show->setText(ui->result_show->text() + "pi");
   }
 }
@@ -273,7 +281,8 @@ void MainWindow::on_pushButton_equal_clicked() {
   char *c_str2 = ba.data();
   char outStr[256] = {0};
   double x = 0.0;
-  double error = 0;
+  int error = 0;
+  double result = 0.0;
   if (str_expr == "") {
     ui->result_show->setText("Ошибка ввода");
   } else {
@@ -281,9 +290,13 @@ void MainWindow::on_pushButton_equal_clicked() {
       str_expr.replace("x", ui->x_value->text());
       x = ui->x_value->text().toDouble();
     }
-    error = s21_smart_calc(c_str2, x);
-    sprintf(outStr, "%.15g", error);
+    error = s21_smart_calc(c_str2, x, &result);
+    if (error == 0){
+    sprintf(outStr, "%.15g", result);
     ui->result_show->setText(outStr);
+    } else {
+        ui->result_show->setText("ERROR");
+    }
   }
 }
 
@@ -320,7 +333,6 @@ void MainWindow::graph() {
     x.clear();
     y.clear();
     ui->result_show->setText("");
-    //        ui->widget->graph(0)->data()->clear();
   }
 }
 
@@ -341,7 +353,7 @@ void MainWindow::make_graph() {
       x.push_back(X);
       QByteArray ba = str.toLatin1();
       char *char_array = ba.data();
-      Y = s21_smart_calc(char_array, X);
+      s21_smart_calc(char_array, X, &Y);
       y.push_back(Y);
       X += step;
     }
@@ -361,6 +373,4 @@ void MainWindow::on_pushButton_clear_graph_clicked() {
   ui->widget->replot();
   x.clear();
   y.clear();
-  //    ui->result_show->setText("");
-  //    ui->widget->graph(0)->data()->clear();
 }
