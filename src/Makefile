@@ -6,10 +6,6 @@ LINUX_FLAGS=-lsubunit -lrt -lpthread -lm
 LIBS=-lcheck
 VALGRIND_FLAGS=--trace-children=yes --track-fds=yes --track-origins=yes --leak-check=full --show-leak-kinds=all --verbose 
 
-
-
-# all, install, uninstall, clean, dvi, dist, tests, gcov_report.
-
 SRC=$(wildcard *.c)
 OBJ=$(patsubst %.c,%.o, ${SRC})
 # HEADER=$(wildcard s21_*.h)
@@ -28,7 +24,7 @@ ifeq ($(OS),Darwin)
 	OPEN_CMD = open
 endif
 
-all:
+all: install dvi open_exe
 
 install:
 	make clean
@@ -37,6 +33,20 @@ install:
 
 uninstall:
 	rm -rf build*
+
+open_exe:
+	$(OPEN_CMD) build/SmartCalc.app
+
+dvi:
+	$(OPEN_CMD) readme.html
+
+dist:
+	rm -rf SmartCalc_v1.0/
+	mkdir SmartCalc_v1.0/
+	mkdir SmartCalc_v1.0/src
+	mv ./build/SmartCalc.app SmartCalc_v1.0/src/
+	tar cvzf SmartCalc_v1.0.tgz SmartCalc_v1.0/
+	rm -rf SmartCalc_v1.0/
 
 tests:
 ifeq ($(OS), Darwin)
@@ -73,9 +83,6 @@ clang:
 clean_obj:
 	rm -rf *.o
 
-clean_lib: 
-	rm -rf *.a
-
 clean_test:
 	rm -rf *.gcda
 	rm -rf *.gcno
@@ -84,8 +91,10 @@ clean_test:
 	rm -rf report
 	rm -rf test.dSYM
 
-clean: clean_lib clean_lib clean_test clean_obj
+clean: clean_test clean_obj
 	rm -rf unit_test
 	rm -rf RESULT_VALGRIND.txt
+	rm -rf SmartCalc_v1.0
+	rm -rf SmartCalc_v1.0.tgz
 
 .PHONY: all clean check lcov

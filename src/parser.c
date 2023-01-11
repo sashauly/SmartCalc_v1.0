@@ -199,7 +199,9 @@ int calculations(struct stack** stack_n, struct stack** stack_o, data_t* data) {
     error = func_operations(stack_n, oper, &c);
   }
   pop(stack_o);
-  push(stack_n, data, c, NUM);
+  if (error == 0) {
+    push(stack_n, data, c, NUM);
+  }
   return error;
 }
 
@@ -306,6 +308,13 @@ int s21_smart_calc(char* src, double x, double* result) {
       }
       if (error == 0) {
         *result = peek(stack_n).value;
+      }
+      while (!is_empty(stack_n)) {
+        pop(&stack_n);
+      }
+    } else {
+      while (!is_empty(stack_o)) {
+        pop(&stack_o);
       }
       while (!is_empty(stack_n)) {
         pop(&stack_n);

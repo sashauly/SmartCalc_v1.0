@@ -132,6 +132,13 @@ void MainWindow::arithmetic() {
         ui->result_show->setText(str + "^");
       }
     }
+    if (str[len - 1] == '(') {
+      if (button == ui->pushButton_plus) {
+        ui->result_show->setText(str + "+");
+      } else if (button == ui->pushButton_minus) {
+        ui->result_show->setText(str + "-");
+      }
+    }
   } else {
     if (button == ui->pushButton_plus) {
       ui->result_show->setText(str + "+");
@@ -291,11 +298,11 @@ void MainWindow::on_pushButton_equal_clicked() {
       x = ui->x_value->text().toDouble();
     }
     error = s21_smart_calc(c_str2, x, &result);
-    if (error == 0){
-    sprintf(outStr, "%.15g", result);
-    ui->result_show->setText(outStr);
+    if (error == 0) {
+      sprintf(outStr, "%.15g", result);
+      ui->result_show->setText(outStr);
     } else {
-        ui->result_show->setText("ERROR");
+      ui->result_show->setText("ERROR");
     }
   }
 }
